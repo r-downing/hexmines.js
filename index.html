@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>HexMines</title>
+	<link rel="stylesheet" type="text/css" href="assets/styles.css">
+
+	<script src="mines.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+	<script>
+		c = (e) => $(document.createElement(e));
+		cs = (e) => $(document.createElementNS("http://www.w3.org/2000/svg", e));
+
+		var mines = new HexMines(15, 15, 40);
+
+		var hps = [...Array(6).keys()].map(a => [Math.cos(Math.PI * (a + 0.5) / 3), Math.sin(Math.PI * (a + 0.5) / 3)]);
+		var ystep = Math.cos(Math.PI / 6);
+		var rad = 20;
+		var hexPoints = hps.map(xy => [xy[0] * rad / ystep, xy[1] * rad / ystep]).map(pp => pp.join(',')).join(' ');
+
+		renderHex = (r, c) => {
+			let cx = (1 + (r % 2) + 2 * c) * rad;
+			let cy = rad + 2 * rad * r * ystep;
+
+			tile = cs('polygon').attr('points', hexPoints).attr('transform', `translate(${cx} ${cy})`).addClass('tile').mousedown((e) => {
+				if (e.which == 1) {
+					mines.select(r, c);
+				}
+				else {
+					e.preventDefault();
+					mines.toggleLock(r, c);
+				}
+				renderStuff();
+			})
+
+			if (mines.tile(r, c).isMine) {
+				tile.addClass('mine');
+			}
+			if (mines.tile(r, c).isLocked) {
+				tile.addClass('locked');
+			} else if (mines.tile(r, c).isRevealed) {
+				if (mines.tile(r, c).numNeighborMines && !mines.tile(r, c).isMine) {
+					tile.addClass('revealed-num').addClass(`revealed${mines.tile(r, c).numNeighborMines}`);
+
+					cs('text').text(mines.tile(r, c).numNeighborMines).attr('x', cx).attr('y', cy).attr('dominant-baseline', 'middle').attr('text-anchor', 'middle').appendTo('#main');
+					tile.addClass('neighbors');
+				}
+			} else {
+				tile.addClass('covered');
+			}
+			tile.appendTo('#main')
+			if (mines.lost) $('.mine').css('fill', 'red');
+			if (mines.won) $('.mine').css('fill', 'green');
+
+		}
+
+		renderStuff = () => {
+			$('#nremaining').text(mines.won ? 'Winner!' : (mines.lost ? 'Loser :(' : `${mines.numMines - mines.numLocked} mines remaining...`));
+			$('#main').empty();
+			mines.coords().forEach(e => renderHex(...e))
+		}
+
+		$(() => {
+			$('#main').contextmenu(() => false);
+			$('#howtoplay').click(() => alert('Left-click a gray tile to reveal. \nRight-click a gray tile to toggle lock. \nLeft-click a revealed tile to auto-reveal neighbors'))
+			renderStuff();
+		})
+
+	</script>
+</head>
+
+<body>
+	<p><span id="nremaining"></span> <button id="howtoplay">How to Play?</button></p>
+	<svg id="main" style="overflow: visible"></svg>
+
+
+</body>
+
+</html>

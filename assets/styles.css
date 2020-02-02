@@ -1,0 +1,58 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#main {
+  font-size: 1.5em;
+}
+
+.tile {
+  pointer-events: visible;
+  stroke-width: 2;
+  stroke: white;
+  fill: white;
+}
+
+.tile:hover {
+  opacity: 0.5;
+}
+
+.locked {
+  fill: brown;
+}
+
+.covered {
+  fill: gray;
+}
+
+.revealed-num {
+  opacity: 0.75;
+}
+
+.revealed0 {
+  fill: white;
+}
+
+.revealed1 {
+  fill: #bed7d1;
+}
+
+.revealed2 {
+  fill: #f7ebc3;
+}
+
+.revealed3 {
+  fill: #fbd6c6;
+}
+
+.revealed4 {
+  fill: #f8e1e7;
+}
+
+.revealed5 {
+  fill: #f8d1e0;
+}
+
+.revealed6 {
+  fill: #f69cc4;
+}
