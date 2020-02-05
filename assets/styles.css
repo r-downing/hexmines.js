@@ -1,9 +1,19 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
 }
 
 #main {
   font-size: 1.5em;
+  overflow: visible;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tile {

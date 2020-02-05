@@ -13,11 +13,12 @@
 		c = (e) => $(document.createElement(e));
 		cs = (e) => $(document.createElementNS("http://www.w3.org/2000/svg", e));
 
-		var mines = new HexMines(15, 15, 40);
+		var mines;
 
 		var hps = [...Array(6).keys()].map(a => [Math.cos(Math.PI * (a + 0.5) / 3), Math.sin(Math.PI * (a + 0.5) / 3)]);
 		var ystep = Math.cos(Math.PI / 6);
-		var rad = 20;
+		// var rad = 30;
+		var rad = Math.floor(Math.sqrt(window.innerWidth * window.innerHeight / 1000));
 		var hexPoints = hps.map(xy => [xy[0] * rad / ystep, xy[1] * rad / ystep]).map(pp => pp.join(',')).join(' ');
 
 		renderHex = (r, c) => {
@@ -57,23 +58,34 @@
 		}
 
 		renderStuff = () => {
-			$('#nremaining').text(mines.won ? 'Winner!' : (mines.lost ? 'Loser :(' : `${mines.numMines - mines.numLocked} mines remaining...`));
+			$('title').text(mines.won ? 'Winner!' : (mines.lost ? 'Loser :(' : `${mines.numMines - mines.numLocked} mines remaining...`));
 			$('#main').empty();
 			mines.coords().forEach(e => renderHex(...e))
 		}
 
 		$(() => {
-			$('#main').contextmenu(() => false);
+			let c = Math.floor((window.innerWidth / rad - 1) / 2);
+			let r = Math.floor((window.innerHeight) * Math.sqrt(3) / 1.5 / rad / 2 - .5);
+
+			mines = new HexMines(r, c, Math.floor(r * c / 5));
+
 			$('#howtoplay').click(() => alert('Left-click a gray tile to reveal. \nRight-click a gray tile to toggle lock. \nLeft-click a revealed tile to auto-reveal neighbors'))
 			renderStuff();
+
+			let bbox = $('#main').contextmenu(() => false).get()[0].getBBox();
+			$('#main').attr('width', bbox.width).attr('height', bbox.height);
+
 		})
 
 	</script>
 </head>
 
 <body>
-	<p><span id="nremaining"></span> | <a href="#" id="howtoplay">How to Play?</a> | <a href="https://github.com/r-downing/hexmines.js">View on github</a></p>
-	<svg id="main" style="overflow: visible"></svg>
+	<p style="display: none"><span id="nremaining"></span> | <a href="#" id="howtoplay">How to Play?</a> | <a
+			href="https://github.com/r-downing/hexmines.js">View on github</a></p>
+	<div class="container">
+		<svg id="main"></svg>
+	</div>
 </body>
 
 </html>
