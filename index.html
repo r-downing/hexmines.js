@@ -25,16 +25,14 @@
 			let cx = (1 + (r % 2) + 2 * c) * rad;
 			let cy = rad + 2 * rad * r * ystep;
 
-			tile = cs('polygon').attr('points', hexPoints).attr('transform', `translate(${cx} ${cy})`).addClass('tile').mousedown((e) => {
-				if (e.which == 1) {
-					mines.select(r, c);
-				}
-				else {
-					e.preventDefault();
-					mines.toggleLock(r, c);
-				}
+			tile = cs('polygon').attr('points', hexPoints).attr('transform', `translate(${cx} ${cy})`).addClass('tile').click((e) => {
+				mines.select(r, c);
 				renderStuff();
-			})
+			}).contextmenu((e) => {
+				e.preventDefault();
+				mines.toggleLock(r, c);
+				renderStuff();
+			});
 
 			if (mines.tile(r, c).isMine) {
 				tile.addClass('mine');
