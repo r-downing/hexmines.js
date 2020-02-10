@@ -59,6 +59,7 @@
 			$('title').text(mines.won ? 'Winner!' : (mines.lost ? 'Loser :(' : `${mines.numMines - mines.numLocked} mines remaining...`));
 			$('#main').empty();
 			mines.coords().forEach(e => renderHex(...e))
+			$('#main').css('font-size', rad);
 		}
 
 		$(() => {
